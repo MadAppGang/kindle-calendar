@@ -1,0 +1,405 @@
+/* ============================================================
+   Kindle Calendar Display — E-Ink Optimized Stylesheet
+   Target: 1072x1448px at 300dpi
+   Design rules:
+   - Black on white, maximum contrast
+   - No colors, gradients, shadows, or transparency
+   - Border styles differentiate calendar sources
+   - Minimum 14px font size
+   - IBM Plex Sans font family
+   - Entire page fits in viewport with no scrolling
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Root / Page ── */
+html, body {
+  width: 1072px;
+  height: 1448px;
+  overflow: hidden;
+  background: #ffffff;
+  color: #000000;
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  width: 1072px;
+  height: 1448px;
+  padding: 40px 48px 32px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Dividers ── */
+hr.section-divider {
+  border: none;
+  border-top: 2px solid #000000;
+  margin: 12px 0;
+}
+
+hr.section-divider.heavy {
+  border-top-width: 4px;
+  margin: 8px 0 12px;
+}
+
+hr.section-divider.thin {
+  border-top-width: 1px;
+  margin: 8px 0;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 12px;
+}
+
+.header-date {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.day-of-week {
+  font-size: 28px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.day-of-month {
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.month-year {
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.header-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.current-time {
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.timezone {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+  margin-top: 2px;
+}
+
+/* ── Weather Bar ── */
+.weather-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.weather-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.weather-temp {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.weather-condition {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.weather-range {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.weather-wind {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.weather-location {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.weather-unavailable {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* ── Section Labels ── */
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 4px 0 6px;
+  color: #000000;
+}
+
+/* ── Timeline / Schedule ── */
+.timeline {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── All-Day Events ── */
+.all-day-section {
+  margin-bottom: 4px;
+}
+
+.all-day-event {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  border: 2px solid #000000;
+  font-size: 15px;
+}
+
+.all-day-event.event-dashed {
+  border-style: dashed;
+}
+
+.all-day-event.event-dotted {
+  border-style: dotted;
+}
+
+.all-day-event .event-source {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Event List ── */
+.event-list {
+  list-style: none;
+  flex: 1;
+  overflow: hidden;
+}
+
+.event-item {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  border-bottom: 1px solid #000000;
+  padding: 10px 0;
+  min-height: 60px;
+}
+
+/* In-progress event: inverted colors */
+.event-item.event-in-progress {
+  background: #000000;
+  color: #ffffff;
+  padding: 10px 8px;
+  margin: 0 -8px;
+}
+
+/* Left border indicator by calendar source */
+.event-item.event-solid {
+  border-left: 5px solid #000000;
+  padding-left: 10px;
+}
+
+.event-item.event-dashed {
+  border-left: 5px dashed #000000;
+  padding-left: 10px;
+}
+
+.event-item.event-dotted {
+  border-left: 5px dotted #000000;
+  padding-left: 10px;
+}
+
+.event-item.event-in-progress.event-solid,
+.event-item.event-in-progress.event-dashed,
+.event-item.event-in-progress.event-dotted {
+  border-left-color: #ffffff;
+}
+
+/* Time block */
+.event-time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 68px;
+  padding-right: 12px;
+  gap: 2px;
+}
+
+.event-start {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.event-end {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* Event body */
+.event-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+}
+
+.event-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-source-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #000000;
+  flex-shrink: 0;
+}
+
+.event-in-progress .event-source-dot {
+  border-color: #ffffff;
+}
+
+.event-dot-solid {
+  background: #000000;
+}
+
+.event-in-progress .event-dot-solid {
+  background: #ffffff;
+}
+
+.event-dot-dashed {
+  background: transparent;
+}
+
+.event-dot-dotted {
+  border-radius: 50%;
+  background: transparent;
+}
+
+.event-title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.event-meta {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.event-location::before {
+  content: "@ ";
+  font-weight: 600;
+}
+
+.event-attendees::before {
+  content: "Attendees: ";
+  font-weight: 600;
+}
+
+/* Event source label (right column) */
+.event-label {
+  min-width: 90px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* No events fallback */
+.no-events {
+  font-size: 16px;
+  font-style: italic;
+  padding: 20px 0;
+  text-align: center;
+  color: #000000;
+}
+
+/* Failed sources warning */
+.failed-sources {
+  margin-top: 8px;
+  border-top: 1px dashed #000000;
+  padding-top: 6px;
+}
+
+.failed-source-item {
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.footer-label {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.footer-time {
+  font-size: 13px;
+  font-weight: 400;
+}

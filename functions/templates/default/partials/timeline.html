@@ -1,0 +1,37 @@
+<section class="schedule">
+  <div class="section-label">Schedule</div>
+
+  {% if calendar.timedEvents.length == 0 %}
+  <div class="no-events">No events scheduled</div>
+  {% else %}
+  <ul class="event-list">
+    {% for event in calendar.timedEvents %}
+    <li class="event style-{{ event.displayStyle }}{% if event.isInProgress %} now{% endif %}">
+      <div class="event-time">
+        <div class="event-start">{{ event.startFormatted }}</div>
+        <div class="event-end">{{ event.endFormatted }}</div>
+      </div>
+      <div class="event-content">
+        {% if event.isInProgress %}
+        <span class="now-label">NOW</span>
+        {% endif %}
+        <div class="event-title">{{ event.title }}</div>
+        <div class="event-details">
+          {% if event.location %}<span>{{ event.location }}</span>{% endif %}
+          {% if event.attendeeCount %}<span>{{ event.attendeeCount }} people</span>{% endif %}
+        </div>
+      </div>
+      <span class="event-source-tag">{{ event.sourceLabel }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if calendar.failedSources.length > 0 %}
+  <div class="warnings">
+    {% for fail in calendar.failedSources %}
+    <div class="warning-item">⚠ {{ fail.sourceId }}: calendar unavailable</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>

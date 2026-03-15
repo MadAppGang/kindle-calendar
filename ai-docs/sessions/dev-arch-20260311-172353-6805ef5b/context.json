@@ -1,0 +1,16 @@
+{
+  "session_id": "dev-arch-20260311-172353-6805ef5b",
+  "project_type": "greenfield",
+  "detected_stack": "none - new project",
+  "target_stacks": ["typescript/node", "cloud-functions", "puppeteer/playwright"],
+  "project_purpose": "Kindle e-ink calendar display server",
+  "display_target": {
+    "device": "Kindle Paperwhite 3",
+    "resolution": "1072x1448",
+    "color": "8-bit grayscale",
+    "dpi": 300
+  },
+  "user_location": "Valencia, Spain",
+  "key_integrations": ["Google Calendar (multiple)", "weather", "current state/location"],
+  "reference_image": "Screenshot showing colorful meeting cards - needs grayscale adaptation"
+}

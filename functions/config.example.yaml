@@ -1,0 +1,36 @@
+display:
+  width: 1072
+  height: 1448
+  dpi: 300
+  timezone: "Europe/Madrid"
+
+location:
+  name: "Valencia, Spain"
+  latitude: 39.4699
+  longitude: -0.3763
+
+calendars:
+  - id: personal
+    type: google
+    label: "Personal"
+    credentialRef: "kindle-cal-oauth-personal"
+    calendarId: "primary"
+    displayStyle: solid
+  - id: work
+    type: google
+    label: "Work"
+    credentialRef: "kindle-cal-oauth-work"
+    calendarId: "primary"
+    displayStyle: dashed
+
+weather:
+  provider: openmeteo
+  units: metric
+
+cache:
+  renderTTLSeconds: 300
+  weatherTTLSeconds: 900
+  calendarTTLSeconds: 300
+
+server:
+  port: 8080

@@ -1,0 +1,11 @@
+<header class="header">
+  <div class="header-left">
+    <div class="day-number">{{ datetime.dayOfMonth }}</div>
+    <div class="day-name">{{ datetime.dayOfWeek }}</div>
+    <div class="month-year">{{ datetime.month }} {{ datetime.year }}</div>
+  </div>
+  <div class="header-right">
+    <div class="current-time">{{ datetime.time }}</div>
+    <div class="location">{{ config.location.name }}</div>
+  </div>
+</header>

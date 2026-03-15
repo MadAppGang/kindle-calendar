@@ -1,0 +1,20 @@
+{
+  "_session_count": 24,
+  "rules": {
+    "grep-instead-of-claudemem": {
+      "last_shown_session": 18,
+      "shown_count": 2,
+      "suppress_until_count": 28
+    },
+    "tmp-path-usage": {
+      "last_shown_session": 17,
+      "shown_count": 2,
+      "suppress_until_count": 27
+    },
+    "excessive-reads-before-delegation": {
+      "last_shown_session": 18,
+      "shown_count": 2,
+      "suppress_until_count": 23
+    }
+  }
+}

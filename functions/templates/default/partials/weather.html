@@ -1,0 +1,17 @@
+<section class="weather">
+  {% if weather.isAvailable %}
+  <div class="weather-left">
+    <span class="weather-icon">{{ weather.conditionIcon }}</span>
+    <div class="weather-temp-group">
+      <span class="weather-temp">{{ weather.temperature }}°</span>
+      <span class="weather-condition">{{ weather.conditionLabel }}</span>
+    </div>
+  </div>
+  <div class="weather-right">
+    <div class="weather-range">H {{ weather.temperatureHigh }}°  L {{ weather.temperatureLow }}°</div>
+    <div class="weather-wind">Wind {{ weather.windSpeed }} km/h</div>
+  </div>
+  {% else %}
+  <div class="weather-unavailable">Weather data unavailable</div>
+  {% endif %}
+</section>

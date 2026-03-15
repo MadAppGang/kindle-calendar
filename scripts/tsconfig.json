@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "node16",
+    "moduleResolution": "node16",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "strict": true,
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "typeRoots": ["../functions/node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "googleapis": ["../functions/node_modules/googleapis/build/src/index.d.ts"]
+    }
+  },
+  "include": ["."]
+}

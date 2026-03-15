@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1072, initial-scale=1">
+  <title>{{ datetime.dayOfWeek }} {{ datetime.dayOfMonth }} {{ datetime.month }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1072px;
+      height: 1448px;
+      overflow: hidden;
+      background: #fff;
+      color: #000;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: 1072px;
+      height: 1448px;
+      padding: 52px 60px 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ════════════════════════════════════════════
+       HEADER — Big date as hero
+       ════════════════════════════════════════════ */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .day-num {
+      font-size: 140px;
+      font-weight: 900;
+      line-height: 0.82;
+      letter-spacing: -6px;
+    }
+
+    .date-stack {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 6px;
+    }
+
+    .day-name {
+      font-size: 36px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+
+    .month-year {
+      font-size: 22px;
+      font-weight: 400;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+      opacity: 0.6;
+    }
+
+    .header-right {
+      text-align: right;
+      padding-top: 4px;
+    }
+
+    .time {
+      font-size: 56px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .location {
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    /* ════════════════════════════════════════════
+       WEATHER BAR
+       ════════════════════════════════════════════ */
+    .weather-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      background: #f0f0f0;
+      margin-bottom: 20px;
+    }
+
+    .wx-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .wx-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .wx-temp {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .wx-label {
+      font-size: 18px;
+      font-weight: 400;
+      opacity: 0.7;
+      margin-left: 4px;
+    }
+
+    .wx-right {
+      text-align: right;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .wx-range {
+      font-weight: 600;
+    }
+
+    .wx-wind {
+      opacity: 0.5;
+    }
+
+    .wx-unavailable {
+      font-size: 16px;
+      opacity: 0.4;
+      font-style: italic;
+    }
+
+    /* ════════════════════════════════════════════
+       ALL-DAY EVENTS
+       ════════════════════════════════════════════ */
+    .all-day-section {
+      margin-bottom: 16px;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-bottom: 10px;
+    }
+
+    .all-day-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .all-day-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border: 2px solid #000;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .all-day-chip.s-dashed { border-style: dashed; }
+    .all-day-chip.s-dotted { border-style: dotted; border-width: 3px; }
+
+    .chip-source {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    /* ════════════════════════════════════════════
+       DIVIDER
+       ════════════════════════════════════════════ */
+    .div-line {
+      border: none;
+      border-top: 2px solid #000;
+      margin: 0 0 16px 0;
+    }
+
+    /* ════════════════════════════════════════════
+       SCHEDULE — Event Cards
+       ════════════════════════════════════════════ */
+    .schedule {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .events {
+      list-style: none;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Single event row ── */
+    .ev {
+      display: flex;
+      align-items: stretch;
+      padding: 0;
+      position: relative;
+    }
+
+    /* Left: time column with source indicator border */
+    .ev-time {
+      width: 110px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 18px 18px 18px 0;
+      border-right: 4px solid #000;
+    }
+
+    .ev.s-dashed .ev-time { border-right-style: dashed; }
+    .ev.s-dotted .ev-time { border-right-style: dotted; border-right-width: 5px; }
+
+    .ev-h-start {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .ev-h-end {
+      font-size: 15px;
+      font-weight: 400;
+      opacity: 0.4;
+      margin-top: 4px;
+      line-height: 1;
+    }
+
+    /* Right: content */
+    .ev-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 18px 0 18px 22px;
+      border-bottom: 1px solid #ddd;
+      gap: 12px;
+    }
+
+    .ev:last-child .ev-body {
+      border-bottom: none;
+    }
+
+    .ev-info {
+      flex: 1;
+    }
+
+    .ev-title {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .ev-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 3px;
+      font-size: 14px;
+      opacity: 0.45;
+      font-weight: 400;
+    }
+
+    .ev-meta span::before {
+      margin-right: 4px;
+    }
+
+    .ev-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 1.5px solid #000;
+      opacity: 0.35;
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    /* ── NOW — currently active event ── */
+    .ev.now {
+      background: #000;
+      color: #fff;
+      margin: 6px -16px;
+      padding: 0 16px;
+    }
+
+    .ev.now .ev-time {
+      border-right-color: rgba(255,255,255,0.3);
+    }
+
+    .ev.now .ev-h-end {
+      opacity: 0.5;
+    }
+
+    .ev.now .ev-body {
+      border-bottom-color: transparent;
+    }
+
+    .ev.now .ev-meta {
+      opacity: 0.55;
+    }
+
+    .ev.now .ev-tag {
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+      opacity: 0.5;
+    }
+
+    .now-badge {
+      display: none;
+    }
+
+    .ev.now .now-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: #fff;
+      color: #000;
+      padding: 2px 10px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Past events: dimmed ── */
+    .ev.past .ev-h-start,
+    .ev.past .ev-title {
+      opacity: 0.3;
+    }
+
+    .ev.past .ev-h-end,
+    .ev.past .ev-meta,
+    .ev.past .ev-tag {
+      opacity: 0.2;
+    }
+
+    .ev.past .ev-time {
+      border-right-color: #ccc;
+    }
+
+    /* ── No events ── */
+    .no-events {
+      font-size: 28px;
+      font-weight: 300;
+      text-align: center;
+      padding: 80px 0;
+      opacity: 0.3;
+    }
+
+    /* ════════════════════════════════════════════
+       FOOTER
+       ════════════════════════════════════════════ */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 16px;
+      margin-top: auto;
+      border-top: 1px solid #ddd;
+      font-size: 13px;
+      font-weight: 400;
+      opacity: 0.3;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Warnings ── */
+    .warnings {
+      padding: 6px 0;
+    }
+
+    .warn {
+      font-size: 12px;
+      opacity: 0.4;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+      <div class="header-left">
+        <div class="day-num">{{ datetime.dayOfMonth }}</div>
+        <div class="date-stack">
+          <div class="day-name">{{ datetime.dayOfWeek }}</div>
+          <div class="month-year">{{ datetime.month }} {{ datetime.year }}</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="time">{{ datetime.time }}</div>
+        <div class="location">{{ config.location.name }}</div>
+      </div>
+    </header>
+
+    <!-- ── WEATHER ── -->
+    <div class="weather-bar">
+      {% if weather.isAvailable %}
+      <div class="wx-left">
+        <span class="wx-icon">{{ weather.conditionIcon }}</span>
+        <span class="wx-temp">{{ weather.temperature }}°</span>
+        <span class="wx-label">{{ weather.conditionLabel }}</span>
+      </div>
+      <div class="wx-right">
+        <div class="wx-range">{{ weather.temperatureHigh }}° / {{ weather.temperatureLow }}°</div>
+        <div class="wx-wind">Wind {{ weather.windSpeed }} km/h</div>
+      </div>
+      {% else %}
+      <span class="wx-unavailable">Weather data unavailable</span>
+      {% endif %}
+    </div>
+
+    <!-- ── ALL-DAY EVENTS ── -->
+    {% if calendar.allDayEvents.length > 0 %}
+    <section class="all-day-section">
+      <div class="label">All Day</div>
+      <div class="all-day-row">
+        {% for ev in calendar.allDayEvents %}
+        <div class="all-day-chip s-{{ ev.displayStyle }}">
+          <span>{{ ev.title }}</span>
+          <span class="chip-source">{{ ev.sourceLabel }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- ── SCHEDULE ── -->
+    <hr class="div-line">
+    <section class="schedule">
+      <div class="label">Schedule</div>
+
+      {% if calendar.timedEvents.length == 0 %}
+      <div class="no-events">Nothing scheduled today</div>
+      {% else %}
+      <ul class="events">
+        {% for ev in calendar.timedEvents %}
+        <li class="ev s-{{ ev.displayStyle }}{% if ev.isInProgress %} now{% endif %}">
+          <div class="ev-time">
+            <div class="ev-h-start">{{ ev.startFormatted }}</div>
+            <div class="ev-h-end">{{ ev.endFormatted }}</div>
+          </div>
+          <div class="ev-body">
+            <div class="ev-info">
+              <span class="now-badge">Now</span>
+              <div class="ev-title">{{ ev.title }}</div>
+              <div class="ev-meta">
+                {% if ev.location %}<span>{{ ev.location }}</span>{% endif %}
+                {% if ev.attendeeCount %}<span>{{ ev.attendeeCount }} people</span>{% endif %}
+              </div>
+            </div>
+            <span class="ev-tag">{{ ev.sourceLabel }}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if calendar.failedSources.length > 0 %}
+      <div class="warnings">
+        {% for f in calendar.failedSources %}
+        <div class="warn">{{ f.sourceId }}: calendar unavailable</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+      <span>Updated {{ datetime.time }}</span>
+      <span>{{ datetime.date }}</span>
+    </footer>
+
+  </div>
+</body>
+</html>

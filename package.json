@@ -1,0 +1,10 @@
+{
+  "name": "kindle-calendar-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd functions && npm run dev",
+    "build": "cd functions && npm run build",
+    "deploy": "cd functions && npm run deploy"
+  }
+}
