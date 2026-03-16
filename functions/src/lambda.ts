@@ -6,6 +6,10 @@ import { createServeRouter } from "./handlers/serve.handler";
 import { CalendarProvider, CredentialsMap } from "./providers/calendar/calendar.provider";
 import { WeatherProvider } from "./providers/weather/weather.provider";
 import { GoogleCredentials } from "./providers/calendar/google.source";
+import { RenderOrchestrator } from "./renderer/orchestrator";
+import { uploadToS3 } from "./storage/s3.uploader";
+
+const S3_BUCKET = process.env["DISPLAY_BUCKET"] || "kindle-calendar-display";
 
 const configPath = path.resolve(__dirname, "..", "config.yaml");
 const config = loadConfig(configPath);
@@ -48,6 +52,7 @@ const providers = {
   calendar: new CalendarProvider(credentialsMap),
 };
 
+// ── HTTP handler (API Gateway) ──
 const app = express();
 
 app.use((req, _res, next) => {
@@ -62,6 +67,45 @@ app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });
 });
 
-export const handler = serverless(app, {
+const httpHandler = serverless(app, {
   binary: ["image/png", "image/jpeg", "image/*"],
 });
+
+// ── Scheduled handler (EventBridge) ──
+async function scheduledRender(): Promise<void> {
+  console.log("[lambda] Scheduled render started");
+
+  const orchestrator = new RenderOrchestrator(config, providers);
+  const result = await orchestrator.render();
+
+  if (!result.png || !result.jpg) {
+    throw new Error("Render pipeline did not produce image output");
+  }
+
+  const [pngUrl, jpgUrl] = await Promise.all([
+    uploadToS3(result.png, {
+      bucket: S3_BUCKET,
+      key: "screen.png",
+      contentType: "image/png",
+    }),
+    uploadToS3(result.jpg, {
+      bucket: S3_BUCKET,
+      key: "screen.jpg",
+      contentType: "image/jpeg",
+    }),
+  ]);
+
+  console.log(`[lambda] Scheduled render complete — PNG: ${pngUrl}, JPG: ${jpgUrl}`);
+}
+
+// ── Dispatcher ──
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handler = async (event: any, context: any) => {
+  if (event.source === "aws.events" || event["detail-type"] === "Scheduled Event") {
+    await scheduledRender();
+    return { statusCode: 200, body: "ok" };
+  }
+
+  // HTTP request via API Gateway
+  return httpHandler(event, context);
+};
