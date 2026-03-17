@@ -10,6 +10,7 @@ import { RenderOrchestrator } from "./renderer/orchestrator";
 import { uploadToS3 } from "./storage/s3.uploader";
 
 const S3_BUCKET = process.env["DISPLAY_BUCKET"] || "kindle-calendar-display";
+const DISPLAY_SECRET = process.env["DISPLAY_SECRET"] || "";
 
 const configPath = path.resolve(__dirname, "..", "config.yaml");
 const config = loadConfig(configPath);
@@ -73,6 +74,10 @@ const httpHandler = serverless(app, {
 
 // ── Scheduled handler (EventBridge) ──
 async function scheduledRender(): Promise<void> {
+  if (!DISPLAY_SECRET) {
+    throw new Error("DISPLAY_SECRET env var is required for S3 uploads");
+  }
+
   console.log("[lambda] Scheduled render started");
 
   const orchestrator = new RenderOrchestrator(config, providers);
@@ -82,15 +87,16 @@ async function scheduledRender(): Promise<void> {
     throw new Error("Render pipeline did not produce image output");
   }
 
+  const prefix = DISPLAY_SECRET;
   const [pngUrl, jpgUrl] = await Promise.all([
     uploadToS3(result.png, {
       bucket: S3_BUCKET,
-      key: "screen.png",
+      key: `${prefix}/screen.png`,
       contentType: "image/png",
     }),
     uploadToS3(result.jpg, {
       bucket: S3_BUCKET,
-      key: "screen.jpg",
+      key: `${prefix}/screen.jpg`,
       contentType: "image/jpeg",
     }),
   ]);
